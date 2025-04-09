@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "mkdir -p dist && cp -r src/* dist/ && cp package.json dist/ && cp README.md dist/",
+    "build": "mkdir -p dist && cp -r src/* dist/ && cp package.json dist/ && cp README.md dist/ && cp index.php dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -41,6 +41,15 @@ app.get('/', (req, res) => {
   `);
 });
 
+// Endpoint pour vérifier le statut (utilisé par index.php)
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // API pour tester la connexion MCP
 app.post('/api/test-mcp', async (req, res) => {
   try {
@@ -80,7 +89,7 @@ app.post('/api/send-email', async (req, res) => {
     const result = await mcpClient.sendEmail(
       email,
       'Test AutoAp MCP',
-      'Ceci est un email ! de test envoyé depuis l\'application AutoAp via MCP Zapier.'
+      'Ceci est un email de test envoyé depuis l\'application AutoAp via MCP Zapier.'
     );
     
     if (result.success) {
