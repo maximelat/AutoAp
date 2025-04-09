@@ -1,15 +1,37 @@
 <?php
-require_once 'mcp_client.php';
+// Activer l'affichage des erreurs
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Vérifier si le fichier client existe
+$clientFile = file_exists('mcp_client_simple.php') ? 'mcp_client_simple.php' : 'mcp_client.php';
+
+if (!file_exists($clientFile)) {
+    echo "Erreur : Le fichier client MCP est introuvable.";
+    exit;
+}
+
+// Charger le client MCP
+require_once $clientFile;
 
 // Initialiser le client MCP
 $mcpClient = new MCPClient();
 
 // Action pour tester la connexion MCP
 if (isset($_GET['action']) && $_GET['action'] === 'test_connection') {
-    $result = $mcpClient->testConnection();
-    
-    header('Content-Type: application/json');
-    echo json_encode($result);
+    try {
+        $result = $mcpClient->testConnection();
+        
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    } catch (Exception $e) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erreur: ' . $e->getMessage()
+        ]);
+    }
     exit;
 }
 
@@ -85,14 +107,22 @@ if (isset($_GET['action']) && $_GET['action'] === 'send_email') {
     }
     
     // Si l'email est fourni, envoyer l'email
-    $result = $mcpClient->sendEmail(
-        $email, 
-        'Test AutoAp MCP', 
-        'Ceci est un email de test envoyé depuis l\'application AutoAp via MCP Zapier.'
-    );
-    
-    header('Content-Type: application/json');
-    echo json_encode($result);
+    try {
+        $result = $mcpClient->sendEmail(
+            $email, 
+            'Test AutoAp MCP', 
+            'Ceci est un email de test envoyé depuis l\'application AutoAp via MCP Zapier.'
+        );
+        
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    } catch (Exception $e) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erreur: ' . $e->getMessage()
+        ]);
+    }
     exit;
 }
 

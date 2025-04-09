@@ -1,14 +1,43 @@
 <?php
-require_once 'mcp_client.php';
+// Activer l'affichage des erreurs en mode développement
+// À commenter en production
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Initialiser le client MCP
-$mcpClient = new MCPClient();
+// Vérifier quel fichier client utiliser
+$clientFile = file_exists('mcp_client_simple.php') ? 'mcp_client_simple.php' : 'mcp_client.php';
 
-// Route pour tester la connexion MCP
-if (isset($_GET['action']) && $_GET['action'] === 'test_connection') {
-    $result = $mcpClient->testConnection();
-    header('Content-Type: application/json');
-    echo json_encode($result);
+// Vérifier si le fichier existe
+if (!file_exists($clientFile)) {
+    echo "<div style='color:red; padding:20px; margin:20px; border:1px solid red;'>
+        <h2>Erreur : Fichier manquant</h2>
+        <p>Le fichier client MCP est introuvable. Veuillez vérifier votre déploiement.</p>
+        <p>Voir <a href='debug.php'>la page de diagnostic</a> pour plus d'informations.</p>
+    </div>";
+    exit;
+}
+
+// Charger le client MCP
+try {
+    require_once $clientFile;
+    
+    // Initialiser le client MCP
+    $mcpClient = new MCPClient();
+    
+    // Route pour tester la connexion MCP
+    if (isset($_GET['action']) && $_GET['action'] === 'test_connection') {
+        $result = $mcpClient->testConnection();
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+} catch (Exception $e) {
+    echo "<div style='color:red; padding:20px; margin:20px; border:1px solid red;'>
+        <h2>Erreur d'initialisation</h2>
+        <p>Une erreur est survenue lors de l'initialisation de l'application : " . $e->getMessage() . "</p>
+        <p>Voir <a href='debug.php'>la page de diagnostic</a> pour plus d'informations.</p>
+    </div>";
     exit;
 }
 
@@ -78,6 +107,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'test_connection') {
             <li><a href="api_test.php?action=test_connection" class="button">Tester la connexion MCP</a></li>
             <li><a href="api_test.php?action=send_email" class="button">Envoyer un email test</a></li>
         </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Diagnostic</h2>
+        <p>Si vous rencontrez des problèmes, visitez la <a href="debug.php">page de diagnostic</a> pour plus d'informations.</p>
+        <p><small>Utilisation du client: <?php echo basename($clientFile); ?></small></p>
     </div>
 
     <script>
