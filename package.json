@@ -1,0 +1,30 @@
+{
+  "name": "autoap",
+  "version": "1.0.0",
+  "description": "Application automatisée avec intégration MCP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "mkdir -p dist && cp -r src/* dist/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maximelat/AutoAp.git"
+  },
+  "keywords": [
+    "automation",
+    "mcp",
+    "zapier"
+  ],
+  "author": "Maxime Latry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maximelat/AutoAp/issues"
+  },
+  "homepage": "https://github.com/maximelat/AutoAp#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1"
+  }
+} 
