@@ -1,0 +1,38 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ftp.cluster029.hosting.ovh.net
+          username: latrycf
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /www/projet/AutoAp/
+          
+      - name: Trigger MCP action
+        run: |
+          curl -X POST "https://actions.zapier.com/mcp/sk-ak-LybLOg46s92oXPE8jxsNVa5RoZ/sse" \
+          -H "Content-Type: application/json" \
+          -d '{"action": "deployment_complete", "status": "success"}' 
