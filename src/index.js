@@ -80,7 +80,7 @@ app.post('/api/send-email', async (req, res) => {
     const result = await mcpClient.sendEmail(
       email,
       'Test AutoAp MCP',
-      'Ceci est un email de test envoyé depuis l\'application AutoAp via MCP Zapier.'
+      'Ceci est un email ! de test envoyé depuis l\'application AutoAp via MCP Zapier.'
     );
     
     if (result.success) {
